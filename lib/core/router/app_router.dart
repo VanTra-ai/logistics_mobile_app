@@ -10,6 +10,7 @@ import '../../features/profile/screens/profile_screen.dart';
 import '../../features/station/screens/station_scan_screen.dart';
 import '../../features/shipment/screens/shipment_list_screen.dart';
 import '../../features/shipment/screens/shipment_detail_screen.dart';
+import '../../features/ticket/screens/ticket_create_screen.dart';
 import '../storage/secure_storage_provider.dart';
 
 /// Danh sách tên các route để tránh hardcode string.
@@ -26,6 +27,7 @@ abstract class AppRoutes {
   static const String station = '/station';
   static const String shipments = '/shipments';
   static const String shipmentDetail = '/shipments/:id';
+  static const String ticketCreate = '/tickets/create';
 }
 
 /// Provider cho GoRouter — được tạo một lần và tái sử dụng xuyên suốt.
@@ -84,6 +86,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final id = state.pathParameters['id']!;
           return ShipmentDetailScreen(shipmentId: id);
+        },
+      ),
+
+      // ── Màn hình Báo cáo Sự cố (push on top) ──
+      GoRoute(
+        path: AppRoutes.ticketCreate,
+        name: 'ticketCreate',
+        builder: (context, state) {
+          final prefilledId = state.uri.queryParameters['orderId'];
+          return TicketCreateScreen(prefilledOrderId: prefilledId);
         },
       ),
 

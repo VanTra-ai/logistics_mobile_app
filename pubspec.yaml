@@ -51,6 +51,9 @@ dependencies:
   # Barcode / QR Scanner
   mobile_scanner: ^6.0.5
 
+  # Image selection
+  image_picker: ^1.1.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

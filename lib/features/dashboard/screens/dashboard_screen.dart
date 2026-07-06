@@ -151,9 +151,7 @@ class _HubCoordinatorDashboard extends StatelessWidget {
             label: 'Báo cáo Sự cố',
             subtitle: 'Ghi nhận đơn hàng ngoại lệ',
             color: colorScheme.error,
-            onTap: () {
-              // TODO: context.go(AppRoutes.exceptions)
-            },
+            onTap: () => context.push(AppRoutes.ticketCreate),
           ),
         ],
       ),
