@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/auth/providers/auth_provider.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/dashboard/screens/dashboard_screen.dart';
 import '../storage/secure_storage_provider.dart';
@@ -33,7 +34,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 
     /// Guard: Kiểm tra JWT Token mỗi lần điều hướng.
     /// - Chưa có token → redirect về màn hình Login (/).
-    /// - Đã có token + đang ở /  → redirect sang /dashboard.
+    /// - Đã có token + đang ở / → redirect sang /dashboard.
     redirect: (context, state) async {
       final token = await storage.read(key: StorageKeys.accessToken);
       final isLoggedIn = token != null && token.isNotEmpty;
@@ -54,3 +55,9 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     },
   );
 });
+
+/// Phương thức tiện ích để làm mới router sau khi đăng nhập/đăng xuất.
+/// Gọi `ref.invalidate(appRouterProvider)` sẽ tạo lại router và trigger guard.
+void refreshRouter(Ref ref) {
+  ref.invalidate(authStatusProvider);
+}

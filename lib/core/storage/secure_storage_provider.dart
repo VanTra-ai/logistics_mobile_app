@@ -13,4 +13,5 @@ final secureStorageProvider = Provider<FlutterSecureStorage>((ref) {
 /// Tên khoá lưu JWT Token trong secure storage.
 abstract class StorageKeys {
   static const String accessToken = 'access_token';
+  static const String refreshToken = 'refresh_token';
 }
