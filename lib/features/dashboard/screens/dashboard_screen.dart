@@ -135,9 +135,7 @@ class _HubCoordinatorDashboard extends StatelessWidget {
             label: 'Trạm Xử lý Đơn hàng',
             subtitle: 'Quét mã nhập/xuất kho bưu cục',
             color: colorScheme.primary,
-            onTap: () {
-              // TODO: context.go(AppRoutes.station)
-            },
+            onTap: () => context.push(AppRoutes.station),
           ),
           const SizedBox(height: 10),
           _QuickActionTile(

@@ -7,6 +7,7 @@ import '../../features/dashboard/screens/dashboard_screen.dart';
 import '../../features/dashboard/screens/main_shell_screen.dart';
 import '../../features/notifications/screens/notifications_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
+import '../../features/station/screens/station_scan_screen.dart';
 import '../storage/secure_storage_provider.dart';
 
 /// Danh sách tên các route để tránh hardcode string.
@@ -18,6 +19,9 @@ abstract class AppRoutes {
   static const String dashboard = '/dashboard';
   static const String notifications = '/notifications';
   static const String profile = '/profile';
+
+  // Sub-routes (push on top of shell)
+  static const String station = '/station';
 }
 
 /// Provider cho GoRouter — được tạo một lần và tái sử dụng xuyên suốt.
@@ -53,6 +57,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.login,
         name: 'login',
         builder: (context, state) => const LoginScreen(),
+      ),
+
+      // ── Màn hình Quét mã Bưu cục (push on top, không thuộc BottomNav) ──
+      GoRoute(
+        path: AppRoutes.station,
+        name: 'station',
+        builder: (context, state) => const StationScanScreen(),
       ),
 
       // ── Shell chứa BottomNavigationBar ──
