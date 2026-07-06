@@ -4,12 +4,20 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/providers/auth_provider.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/dashboard/screens/dashboard_screen.dart';
+import '../../features/dashboard/screens/main_shell_screen.dart';
+import '../../features/notifications/screens/notifications_screen.dart';
+import '../../features/profile/screens/profile_screen.dart';
 import '../storage/secure_storage_provider.dart';
 
 /// Danh sách tên các route để tránh hardcode string.
 abstract class AppRoutes {
+  // Ngoài shell
   static const String login = '/';
+
+  // Trong shell (BottomNav)
   static const String dashboard = '/dashboard';
+  static const String notifications = '/notifications';
+  static const String profile = '/profile';
 }
 
 /// Provider cho GoRouter — được tạo một lần và tái sử dụng xuyên suốt.
@@ -19,22 +27,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: AppRoutes.login,
     debugLogDiagnostics: true,
-    routes: [
-      GoRoute(
-        path: AppRoutes.login,
-        name: 'login',
-        builder: (context, state) => const LoginScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.dashboard,
-        name: 'dashboard',
-        builder: (context, state) => const DashboardScreen(),
-      ),
-    ],
 
     /// Guard: Kiểm tra JWT Token mỗi lần điều hướng.
-    /// - Chưa có token → redirect về màn hình Login (/).
-    /// - Đã có token + đang ở / → redirect sang /dashboard.
     redirect: (context, state) async {
       final token = await storage.read(key: StorageKeys.accessToken);
       final isLoggedIn = token != null && token.isNotEmpty;
@@ -50,14 +44,44 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         return AppRoutes.dashboard;
       }
 
-      // Không cần redirect
       return null;
     },
+
+    routes: [
+      // ── Màn hình Đăng nhập (ngoài shell) ──
+      GoRoute(
+        path: AppRoutes.login,
+        name: 'login',
+        builder: (context, state) => const LoginScreen(),
+      ),
+
+      // ── Shell chứa BottomNavigationBar ──
+      ShellRoute(
+        builder: (context, state, child) =>
+            MainShellScreen(child: child),
+        routes: [
+          GoRoute(
+            path: AppRoutes.dashboard,
+            name: 'dashboard',
+            builder: (context, state) => const DashboardScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.notifications,
+            name: 'notifications',
+            builder: (context, state) => const NotificationsScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.profile,
+            name: 'profile',
+            builder: (context, state) => const ProfileScreen(),
+          ),
+        ],
+      ),
+    ],
   );
 });
 
-/// Phương thức tiện ích để làm mới router sau khi đăng nhập/đăng xuất.
-/// Gọi `ref.invalidate(appRouterProvider)` sẽ tạo lại router và trigger guard.
+/// Phương thức tiện ích để làm mới trạng thái đăng nhập.
 void refreshRouter(Ref ref) {
   ref.invalidate(authStatusProvider);
 }
