@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/router/app_router.dart';
+import 'features/auth/providers/auth_provider.dart';
 
 void main() {
   // Đảm bảo Flutter binding được khởi tạo trước khi truy cập các platform channel
@@ -23,32 +24,65 @@ class LogisticsApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Đọc GoRouter từ Provider
-    final router = ref.watch(appRouterProvider);
+    // Đọc trạng thái khởi tạo tài khoản (JWT + nạp Profile)
+    final authStatus = ref.watch(authStatusProvider);
 
-    return MaterialApp.router(
-      title: 'VanTra Logistics',
-      debugShowCheckedModeBanner: false,
-
-      // Cấu hình theme cơ bản — sẽ được mở rộng sau
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF1565C0), // Xanh dương VanTra
-          brightness: Brightness.light,
+    return authStatus.when(
+      loading: () => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1565C0)),
+          useMaterial3: true,
         ),
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF1565C0),
-          brightness: Brightness.dark,
+        home: const Scaffold(
+          body: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.local_shipping_rounded, size: 64, color: Color(0xFF1565C0)),
+                SizedBox(height: 16),
+                CircularProgressIndicator(),
+              ],
+            ),
+          ),
         ),
-        useMaterial3: true,
       ),
-      themeMode: ThemeMode.system,
+      error: (err, stack) => MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Text('Lỗi khởi động ứng dụng: $err'),
+          ),
+        ),
+      ),
+      data: (_) {
+        // Đọc GoRouter từ Provider sau khi khởi tạo thành công
+        final router = ref.watch(appRouterProvider);
 
-      // Kết nối với GoRouter
-      routerConfig: router,
+        return MaterialApp.router(
+          title: 'VanTra Logistics',
+          debugShowCheckedModeBanner: false,
+
+          // Cấu hình theme cơ bản
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF1565C0), // Xanh dương VanTra
+              brightness: Brightness.light,
+            ),
+            useMaterial3: true,
+          ),
+          darkTheme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF1565C0),
+              brightness: Brightness.dark,
+            ),
+            useMaterial3: true,
+          ),
+          themeMode: ThemeMode.system,
+
+          // Kết nối với GoRouter
+          routerConfig: router,
+        );
+      },
     );
   }
 }

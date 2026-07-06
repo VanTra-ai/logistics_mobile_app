@@ -50,6 +50,22 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   AuthNotifier(this._repository) : super(const AuthState());
 
+  /// Khởi tạo và tải profile nếu đã có token sẵn
+  Future<void> initialize() async {
+    final hasToken = await _repository.hasValidToken();
+    if (hasToken) {
+      state = state.copyWith(isLoading: true);
+      try {
+        final user = await _repository.getProfile();
+        state = state.copyWith(isLoading: false, user: user);
+      } catch (e) {
+        state = state.copyWith(isLoading: false);
+        // Có thể token hết hạn hoặc lỗi kết nối, đăng xuất để đảm bảo sạch sẽ
+        await logout();
+      }
+    }
+  }
+
   /// Đăng nhập với email và password.
   Future<bool> login({
     required String email,
@@ -58,8 +74,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(isLoading: true, clearError: true);
 
     try {
-      final result = await _repository.login(email: email, password: password);
-      state = state.copyWith(isLoading: false, user: result.user);
+      await _repository.login(email: email, password: password);
+      // Gọi getProfile() để tải thông tin user đầy đủ (kèm hub)
+      final user = await _repository.getProfile();
+      state = state.copyWith(isLoading: false, user: user);
       return true;
     } on Exception catch (e) {
       final message = _parseError(e);
@@ -108,6 +126,7 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
 /// Provider kiểm tra trạng thái đăng nhập lúc khởi động ứng dụng.
 /// Trả về true nếu đang có access_token hợp lệ trong Secure Storage.
 final authStatusProvider = FutureProvider<bool>((ref) async {
-  final repository = ref.read(authRepositoryProvider);
-  return repository.hasValidToken();
+  final notifier = ref.read(authProvider.notifier);
+  await notifier.initialize();
+  return ref.read(authProvider).isAuthenticated;
 });

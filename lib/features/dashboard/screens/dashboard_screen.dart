@@ -143,9 +143,7 @@ class _HubCoordinatorDashboard extends StatelessWidget {
             label: 'Điều phối Chuyến xe',
             subtitle: 'Phân công tài xế & lộ trình',
             color: colorScheme.secondary,
-            onTap: () {
-              // TODO: context.go(AppRoutes.dispatch)
-            },
+            onTap: () => context.push(AppRoutes.shipments),
           ),
           const SizedBox(height: 10),
           _QuickActionTile(

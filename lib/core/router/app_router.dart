@@ -8,6 +8,8 @@ import '../../features/dashboard/screens/main_shell_screen.dart';
 import '../../features/notifications/screens/notifications_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
 import '../../features/station/screens/station_scan_screen.dart';
+import '../../features/shipment/screens/shipment_list_screen.dart';
+import '../../features/shipment/screens/shipment_detail_screen.dart';
 import '../storage/secure_storage_provider.dart';
 
 /// Danh sách tên các route để tránh hardcode string.
@@ -22,6 +24,8 @@ abstract class AppRoutes {
 
   // Sub-routes (push on top of shell)
   static const String station = '/station';
+  static const String shipments = '/shipments';
+  static const String shipmentDetail = '/shipments/:id';
 }
 
 /// Provider cho GoRouter — được tạo một lần và tái sử dụng xuyên suốt.
@@ -64,6 +68,23 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.station,
         name: 'station',
         builder: (context, state) => const StationScanScreen(),
+      ),
+
+      // ── Màn hình Danh sách Chuyến xe (push on top) ──
+      GoRoute(
+        path: AppRoutes.shipments,
+        name: 'shipments',
+        builder: (context, state) => const ShipmentListScreen(),
+      ),
+
+      // ── Màn hình Chi tiết Chuyến xe (push on top) ──
+      GoRoute(
+        path: AppRoutes.shipmentDetail,
+        name: 'shipmentDetail',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return ShipmentDetailScreen(shipmentId: id);
+        },
       ),
 
       // ── Shell chứa BottomNavigationBar ──

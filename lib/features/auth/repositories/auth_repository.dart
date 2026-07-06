@@ -63,6 +63,12 @@ class AuthRepository {
     return token != null && token.isNotEmpty;
   }
 
+  /// Lấy thông tin cá nhân của người dùng đang đăng nhập (bao gồm cả bưu cục)
+  Future<UserModel> getProfile() async {
+    final response = await _dio.get<Map<String, dynamic>>('/users/profile');
+    return UserModel.fromJson(response.data!);
+  }
+
   /// Đăng xuất: xóa sạch toàn bộ token khỏi Secure Storage.
   Future<void> logout() async {
     await Future.wait([
