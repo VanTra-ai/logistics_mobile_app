@@ -49,4 +49,30 @@ class LabelService {
       throw Exception('Lỗi khi mở nhãn in: $e');
     }
   }
+  /// Tải file Excel biên bản chuyến xe từ API và mở
+  Future<void> downloadAndOpenManifest(String shipmentId) async {
+    try {
+      final response = await _dio.get(
+        '/exports/orders?shipmentId=$shipmentId',
+        options: Options(
+          responseType: ResponseType.bytes,
+          headers: {'Cache-Control': 'no-cache'},
+        ),
+      );
+
+      final tempDir = await getTemporaryDirectory();
+      final file = File('${tempDir.path}/bien-ban-$shipmentId.xlsx');
+      await file.writeAsBytes(response.data);
+
+      final result = await OpenFile.open(file.path);
+      
+      if (result.type != ResultType.done) {
+        throw Exception('Không thể mở file Excel: ${result.message}');
+      }
+    } on DioException catch (e) {
+      throw Exception('Lỗi mạng khi tải biên bản: ${e.message}');
+    } catch (e) {
+      throw Exception('Lỗi khi mở biên bản: $e');
+    }
+  }
 }

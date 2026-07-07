@@ -44,6 +44,27 @@ class _ShipmentDetailScreenState extends ConsumerState<ShipmentDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(shipment.shipmentCode ?? 'Chi tiết chuyến xe'),
+        actions: [
+          if (shipment.orders?.isNotEmpty == true)
+            IconButton(
+              icon: const Icon(Icons.download_rounded),
+              tooltip: 'Tải Biên bản',
+              onPressed: () async {
+                try {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Đang tải biên bản...')),
+                  );
+                  await ref.read(labelServiceProvider).downloadAndOpenManifest(shipment.id);
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
+                    );
+                  }
+                }
+              },
+            ),
+        ],
       ),
       body: Column(
         children: [
