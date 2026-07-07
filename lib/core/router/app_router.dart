@@ -12,6 +12,9 @@ import '../../features/shipment/screens/shipment_list_screen.dart';
 import '../../features/shipment/screens/shipment_detail_screen.dart';
 import '../../features/ticket/screens/ticket_create_screen.dart';
 import '../../features/shipper/screens/shipper_scan_screen.dart';
+import '../../features/wms/screens/putaway_screen.dart';
+import '../../features/wms/screens/packaging_screen.dart';
+import '../../features/wms/screens/audit_screen.dart';
 import '../storage/secure_storage_provider.dart';
 
 /// Danh sách tên các route để tránh hardcode string.
@@ -30,6 +33,11 @@ abstract class AppRoutes {
   static const String shipmentDetail = '/shipments/:id';
   static const String ticketCreate = '/tickets/create';
   static const String shipperScan = '/shipper/scan';
+
+  // WMS routes
+  static const String wmsPutaway = '/wms/putaway';
+  static const String wmsPackaging = '/wms/packaging';
+  static const String wmsAudit = '/wms/audit';
 }
 
 /// Provider cho GoRouter — được tạo một lần và tái sử dụng xuyên suốt.
@@ -108,7 +116,24 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const ShipperScanScreen(),
       ),
 
-      // ── Shell chứa BottomNavigationBar ──
+      // ── WMS Routes (push on top) ──
+      GoRoute(
+        path: AppRoutes.wmsPutaway,
+        name: 'wmsPutaway',
+        builder: (context, state) => const PutawayScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.wmsPackaging,
+        name: 'wmsPackaging',
+        builder: (context, state) => const PackagingScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.wmsAudit,
+        name: 'wmsAudit',
+        builder: (context, state) => const AuditScreen(),
+      ),
+
+      // ── ShellRoute chứa BottomNavigationBar ──
       ShellRoute(
         builder: (context, state, child) =>
             MainShellScreen(child: child),
