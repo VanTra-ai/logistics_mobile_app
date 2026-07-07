@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/shipment_model.dart';
 import '../providers/shipment_provider.dart';
 import '../repositories/shipment_repository.dart';
+import '../../../core/services/label_service.dart';
 
 class ShipmentDetailScreen extends ConsumerStatefulWidget {
   final String shipmentId;
@@ -272,14 +273,14 @@ class _ShipmentDetailScreenState extends ConsumerState<ShipmentDetailScreen> {
   }
 }
 
-class _AssignedOrdersTab extends StatelessWidget {
+class _AssignedOrdersTab extends ConsumerWidget {
   final List<OrderModel> orders;
   final ColorScheme colorScheme;
 
   const _AssignedOrdersTab({required this.orders, required this.colorScheme});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (orders.isEmpty) {
       return const Center(
         child: Text('Chưa có đơn hàng nào được xếp lên xe này!'),
@@ -303,12 +304,35 @@ class _AssignedOrdersTab extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            trailing: Text(
-              '${order.weight} kg',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: colorScheme.primary,
-              ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '${order.weight} kg',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: colorScheme.primary,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.print, color: Colors.blue),
+                  onPressed: () async {
+                    try {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Đang tải nhãn in...')),
+                      );
+                      await ref.read(labelServiceProvider).downloadAndOpenLabel(order.id);
+                    } catch (e) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
+                        );
+                      }
+                    }
+                  },
+                  tooltip: 'Xem / In nhãn',
+                ),
+              ],
             ),
           ),
         );

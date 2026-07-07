@@ -11,6 +11,7 @@ import '../../features/station/screens/station_scan_screen.dart';
 import '../../features/shipment/screens/shipment_list_screen.dart';
 import '../../features/shipment/screens/shipment_detail_screen.dart';
 import '../../features/ticket/screens/ticket_create_screen.dart';
+import '../../features/shipper/screens/shipper_scan_screen.dart';
 import '../storage/secure_storage_provider.dart';
 
 /// Danh sách tên các route để tránh hardcode string.
@@ -28,6 +29,7 @@ abstract class AppRoutes {
   static const String shipments = '/shipments';
   static const String shipmentDetail = '/shipments/:id';
   static const String ticketCreate = '/tickets/create';
+  static const String shipperScan = '/shipper/scan';
 }
 
 /// Provider cho GoRouter — được tạo một lần và tái sử dụng xuyên suốt.
@@ -97,6 +99,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           final prefilledId = state.uri.queryParameters['orderId'];
           return TicketCreateScreen(prefilledOrderId: prefilledId);
         },
+      ),
+
+      // ── Màn hình Quét Giao Hàng Shipper (push on top) ──
+      GoRoute(
+        path: AppRoutes.shipperScan,
+        name: 'shipperScan',
+        builder: (context, state) => const ShipperScanScreen(),
       ),
 
       // ── Shell chứa BottomNavigationBar ──

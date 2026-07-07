@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/router/app_router.dart';
 import '../../../features/auth/models/user_model.dart';
 import '../../../features/auth/providers/auth_provider.dart';
+import '../../../features/shipper/screens/shipper_dashboard_screen.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -21,6 +22,7 @@ class DashboardScreen extends ConsumerWidget {
 
     return switch (user.role) {
       'HUB_COORDINATOR' => _HubCoordinatorDashboard(user: user, ref: ref),
+      'SHIPPER' => ShipperDashboardScreen(user: user),
       _ => _AdminDashboard(user: user, ref: ref),
     };
   }
