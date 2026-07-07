@@ -9,6 +9,9 @@ class OrderModel {
   final String receiverAddress;
   final double weight;
   final double codAmount;
+  final int deliverySequence;
+  final double? latitude;
+  final double? longitude;
 
   const OrderModel({
     required this.id,
@@ -18,6 +21,9 @@ class OrderModel {
     required this.receiverAddress,
     required this.weight,
     required this.codAmount,
+    this.deliverySequence = 0,
+    this.latitude,
+    this.longitude,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
@@ -29,6 +35,9 @@ class OrderModel {
       receiverAddress: json['receiver_address'] as String? ?? '',
       weight: double.tryParse(json['weight']?.toString() ?? '0') ?? 0.0,
       codAmount: double.tryParse(json['cod_amount']?.toString() ?? '0') ?? 0.0,
+      deliverySequence: json['delivery_sequence'] as int? ?? 0,
+      latitude: json['latitude'] != null ? double.tryParse(json['latitude'].toString()) : null,
+      longitude: json['longitude'] != null ? double.tryParse(json['longitude'].toString()) : null,
     );
   }
 
@@ -41,6 +50,9 @@ class OrderModel {
       'receiver_address': receiverAddress,
       'weight': weight,
       'cod_amount': codAmount,
+      'delivery_sequence': deliverySequence,
+      'latitude': latitude,
+      'longitude': longitude,
     };
   }
 }
