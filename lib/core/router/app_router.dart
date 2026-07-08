@@ -14,6 +14,7 @@ import '../../features/ticket/screens/ticket_create_screen.dart';
 import '../../features/shipper/screens/shipper_scan_screen.dart';
 import '../../features/wms/screens/putaway_screen.dart';
 import '../../features/wms/screens/packaging_screen.dart';
+import '../../features/wallet/screens/my_wallet_screen.dart';
 import '../../features/wms/screens/audit_screen.dart';
 import '../storage/secure_storage_provider.dart';
 
@@ -28,6 +29,7 @@ abstract class AppRoutes {
   static const String profile = '/profile';
 
   // Sub-routes (push on top of shell)
+  static const String wallet = '/wallet';
   static const String station = '/station';
   static const String shipments = '/shipments';
   static const String shipmentDetail = '/shipments/:id';
@@ -73,6 +75,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.login,
         name: 'login',
         builder: (context, state) => const LoginScreen(),
+      ),
+
+      // ── Màn hình Ví của tôi (push on top) ──
+      GoRoute(
+        path: AppRoutes.wallet,
+        name: 'wallet',
+        builder: (context, state) => const MyWalletScreen(),
       ),
 
       // ── Màn hình Quét mã Bưu cục (push on top, không thuộc BottomNav) ──

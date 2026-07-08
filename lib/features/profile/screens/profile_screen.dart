@@ -73,6 +73,21 @@ class ProfileScreen extends ConsumerWidget {
                   ),
                   tileColor: colorScheme.surfaceContainerLow,
                 ),
+                const SizedBox(height: 12),
+
+                // ── Ví của tôi ──
+                ListTile(
+                  leading: const Icon(Icons.account_balance_wallet_outlined),
+                  title: const Text('Ví của tôi'),
+                  trailing: const Icon(Icons.chevron_right),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  tileColor: colorScheme.surfaceContainerLow,
+                  onTap: () {
+                    context.push(AppRoutes.wallet);
+                  },
+                ),
                 const SizedBox(height: 24),
 
                 // ── Đăng xuất ──
