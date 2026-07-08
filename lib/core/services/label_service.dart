@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:open_file_plus/open_file_plus.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../network/api_client.dart';
@@ -38,7 +38,7 @@ class LabelService {
       await file.writeAsBytes(response.data);
 
       // Mở file bằng ứng dụng hệ thống
-      final result = await OpenFile.open(file.path);
+      final result = await OpenFilex.open(file.path);
       
       if (result.type != ResultType.done) {
         throw Exception('Không thể mở file: ${result.message}');
@@ -64,7 +64,7 @@ class LabelService {
       final file = File('${tempDir.path}/bien-ban-$shipmentId.xlsx');
       await file.writeAsBytes(response.data);
 
-      final result = await OpenFile.open(file.path);
+      final result = await OpenFilex.open(file.path);
       
       if (result.type != ResultType.done) {
         throw Exception('Không thể mở file Excel: ${result.message}');
